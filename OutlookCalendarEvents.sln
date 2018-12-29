@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutlookCalendarEvents", "OutlookCalendarEvents\OutlookCalendarEvents.csproj", "{B16336EE-8157-4F82-BC61-86D0DCA5B5A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{665A72B7-CBCB-49EB-AD87-16F266FAB097}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B16336EE-8157-4F82-BC61-86D0DCA5B5A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B16336EE-8157-4F82-BC61-86D0DCA5B5A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B16336EE-8157-4F82-BC61-86D0DCA5B5A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B16336EE-8157-4F82-BC61-86D0DCA5B5A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6527818C-D797-4D43-A48A-D2C8898E89AB}
+	EndGlobalSection
+EndGlobal
