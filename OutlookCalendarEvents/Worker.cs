@@ -24,6 +24,7 @@ namespace OutlookCalendarEvents
         const UInt32 SWP_NOSIZE = 0x0001;
         const UInt32 SWP_NOMOVE = 0x0002;
         const UInt32 SWP_SHOWWINDOW = 0x0040;
+        const UInt32 SWP_ASYNCWINDOWPOS = 0x4000; 
         private const UInt32 SWP_NOACTIVATE = 0x0010;
 
 
@@ -126,7 +127,7 @@ namespace OutlookCalendarEvents
                         )
                     {
                         Debug.WriteLine($"found title: '{Title}'");
-                        // dealing qith a quirk of Outlook 
+                        // dealing with a quirk of Outlook 
                         // After you (the user) Dismiss or Snooze calendar events, the line item is removed, but 
                         // the Reminder window title will still contain the number of previous events.
                         // SO .... 
@@ -149,8 +150,9 @@ namespace OutlookCalendarEvents
                             Debug.WriteLine($"{sbTitle} match and not zero");
                             System.Threading.Thread.Sleep(1000);
                             ShowWindow(hWndMainWindow, SW_SHOWNOACTIVATE);
-                            SetWindowPos(hWndMainWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
-                            
+                            //SetWindowPos(hWndMainWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_ASYNCWINDOWPOS | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+                            //SetWindowPos(hWndMainWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+                            Debug.WriteLine($"{sbTitle} updated");
                         }
                         else
                         {
