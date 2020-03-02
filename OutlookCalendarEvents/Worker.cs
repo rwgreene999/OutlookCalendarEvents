@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 
+
 namespace OutlookCalendarEvents
 {
     internal class Worker : BackgroundWorker
@@ -68,7 +69,9 @@ namespace OutlookCalendarEvents
         [DllImport("User32.Dll", EntryPoint = "PostMessageA")]
         private static extern bool PostMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
 
-
+        [DllImport("user32.dll")]
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint wMsg,
+                                        int wParam, int lParam);
 
         [Serializable]
         [StructLayout(LayoutKind.Sequential)]
@@ -126,40 +129,7 @@ namespace OutlookCalendarEvents
                         && !Title.StartsWith("0 ")
                         )
                     {
-                        Debug.WriteLine($"found title: '{Title}'");
-                        // dealing with a quirk of Outlook 
-                        // After you (the user) Dismiss or Snooze calendar events, the line item is removed, but 
-                        // the Reminder window title will still contain the number of previous events.
-                        // SO .... 
-                        // We find the SysListView inside, and click it.  After a couple fo seconds, this cause the 
-                        // title to change to "0 reminders' if there are no other real outstanding reminders 
-                        IntPtr hWndChild = FindChildWindowOfClassSysListView(hWndMainWindow);
-                        if (hWndChild != null)
-                        {
-                            // post a message to SysListView, and if there are no events, it will change the title to 0 reminders which we ignore
-                            PostMessage(hWndChild, WM_LBUTTONDOWN, 0, 0);
-                            PostMessage(hWndChild, WM_LBUTTONUP, 0, 0);
-                            System.Threading.Thread.Sleep(5000);
-                        }
-
-
-                        if (GetWindowText(hWndMainWindow, sbTitle, sbTitle.Capacity) > 1
-                            && !(sbTitle.ToString()).StartsWith("0")
-                            )
-                        {
-                            Debug.WriteLine($"{sbTitle} match and not zero");
-                            System.Threading.Thread.Sleep(1000);
-                            ShowWindow(hWndMainWindow, SW_SHOWNOACTIVATE);
-                            //SetWindowPos(hWndMainWindow, HWND_TOPMOST, 0, 0, 0, 0, SWP_ASYNCWINDOWPOS | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
-                            //SetWindowPos(hWndMainWindow, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
-                            Debug.WriteLine($"{sbTitle} updated");
-                        }
-                        else
-                        {
-                            PostMessage(hWndMainWindow, WM_CLOSE, 0, 0);
-                            //ShowWindow(hWndMainWindow, SW_SHOWMINNOACTIVE);
-                            Debug.WriteLine($"{sbTitle} now says zero events");
-                        }
+                        ProcessOutlookEventWindow(hWndMainWindow, sbTitle, Title);
                     }
                     else
                     {
@@ -168,6 +138,51 @@ namespace OutlookCalendarEvents
                 }
             }
             return true;
+        }
+
+        private static void ProcessOutlookEventWindow(IntPtr hWndMainWindow, StringBuilder sbTitle, string Title)
+        {
+            TryAndEmptyEventsFromWindow(hWndMainWindow);
+
+            if (GetWindowText(hWndMainWindow, sbTitle, sbTitle.Capacity) > 1
+                && !(sbTitle.ToString()).StartsWith("0")
+                )
+            {
+                HandleNotificationToUser(hWndMainWindow, sbTitle);
+            }
+            else
+            {
+                AttemptToCloseTheWindow(hWndMainWindow, sbTitle);
+            }
+        }
+
+        private static void AttemptToCloseTheWindow(IntPtr hWndMainWindow, StringBuilder sbTitle)
+        {
+            PostMessage(hWndMainWindow, WM_CLOSE, 0, 0);
+            //ShowWindow(hWndMainWindow, SW_SHOWMINNOACTIVE);
+            // Debug.WriteLine($"{sbTitle} now says zero events");
+        }
+
+        private static void HandleNotificationToUser(IntPtr hWndMainWindow, StringBuilder sbTitle)
+        {
+            NotifyFlashAllWindows.Flash(NotifyFlashAllWindows.ScreenSide.all);
+        }
+
+        private static void TryAndEmptyEventsFromWindow(IntPtr hWndMainWindow)
+        {
+            // dealing with a quirk of Outlook 
+            // After you (the user) Dismiss or Snooze calendar events, the line item is removed, but 
+            // the Reminder window title will still contain the number of previous events.
+            // SO .... 
+            // We find the SysListView inside, and click it.  After a couple fo seconds, this cause the 
+            // title to change to "0 reminders' if there are no other real outstanding reminders 
+            IntPtr hWndChild = FindChildWindowOfClassSysListView(hWndMainWindow);
+            if (hWndChild != null)
+            {
+                // post a message to SysListView, and if there are no events, it will change the title to 0 reminders which we ignore                SendMessage(hWndChild, WM_LBUTTONDOWN, 0, 0);
+                SendMessage(hWndChild, WM_LBUTTONUP, 0, 0);
+                System.Threading.Thread.Sleep(5000);
+            }
         }
 
         private static IntPtr FindChildWindowOfClassSysListView(IntPtr hWndParent)
