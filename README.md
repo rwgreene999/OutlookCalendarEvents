@@ -16,6 +16,10 @@ Every minute or so, scan windows for an Outlook Calendar Reminder window.  If on
 
 There is an icon in the tray with a few options, such as pause looking for reminders for 15 minutes.  
 
+## Changes
+
+-   Changed from trying to popup the calendar event window to just flashing the borders of the screen because the calendar window kept grabbing focus when I was typing into other Office products. 
+
 ## Roadmap
 
 -   Create a better icon 
