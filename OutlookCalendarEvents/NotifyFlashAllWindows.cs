@@ -73,7 +73,6 @@ namespace OutlookCalendarEvents
             Form form = new Form();
             form.FormBorderStyle = FormBorderStyle.None;
             form.BackColor = Color.FromArgb(0, 255, 0);
-            form.SetBounds(left, top, width, height);
             form.TopMost = true;
             form.BringToFront();
             form.Show();

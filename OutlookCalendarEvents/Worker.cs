@@ -179,8 +179,9 @@ namespace OutlookCalendarEvents
             IntPtr hWndChild = FindChildWindowOfClassSysListView(hWndMainWindow);
             if (hWndChild != null)
             {
-                // post a message to SysListView, and if there are no events, it will change the title to 0 reminders which we ignore                SendMessage(hWndChild, WM_LBUTTONDOWN, 0, 0);
-                SendMessage(hWndChild, WM_LBUTTONUP, 0, 0);
+                // post a message to SysListView, and if there are no events, it will change the title to 0 reminders which we ignore                
+                PostMessage(hWndChild, WM_LBUTTONDOWN, 0, 0);
+                PostMessage(hWndChild, WM_LBUTTONUP, 0, 0);
                 System.Threading.Thread.Sleep(5000);
             }
         }
